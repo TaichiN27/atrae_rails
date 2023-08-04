@@ -33,19 +33,19 @@ class User < ApplicationRecord
 
 class << self
 
-    def self.digest(string)
-        cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
-                                                      BCrypt::Engine.cost
-        BCrypt::Password.create(string, cost: cost)
+        def self.digest(string)
+            cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                                                          BCrypt::Engine.cost
+            BCrypt::Password.create(string, cost: cost)
+        end
+    
+    
+        def self.new_token
+            SecureRandom.urlsafe_base64
+        end
+    
+        def forget
+            update_attribute(:remember_digest, nil)
+        end
     end
-
-
-    def self.new_token
-        SecureRandom.urlsafe_base64
-    end
-
-    def forget
-        update_attribute(:remember_digest, nil)
-    end
-end
 end
