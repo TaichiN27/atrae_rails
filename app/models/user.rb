@@ -30,7 +30,7 @@ class User < ApplicationRecord
 
     def authenticated?(attribute, token)
         digest = send("#{attribute}_digest")
-        return false if digest.nil?
+        return false if remember_digest.nil?
         BCrypt::Password.new(digest).is_password?(token)
     end
 
@@ -57,6 +57,10 @@ class User < ApplicationRecord
         reset_sent_at < 2.hours.ago
     end
 
+    def forget
+        update_attribute(:remember_digest, nil)
+    end
+
     private
 
     def downcase_email
@@ -81,8 +85,6 @@ class << self
         SecureRandom.urlsafe_base64
     end
 
-    def forget
-        update_attribute(:remember_digest, nil)
-    end
+
 end
 end
